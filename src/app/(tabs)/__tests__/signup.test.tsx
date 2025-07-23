@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react-native';
 import SignupScreen from '../signup';
 
 // Mock the theme hook
-jest.mock('../../../hooks/useThemeColor', () => ({
+jest.mock('@/hooks/useThemeColor', () => ({
   useThemeColor: jest.fn((props, colorName) => {
     const colors = {
       background: '#121212',
@@ -14,7 +14,7 @@ jest.mock('../../../hooks/useThemeColor', () => ({
 }));
 
 // Mock ThemedButton
-jest.mock('../../../components/ThemedButton', () => ({
+jest.mock('@/components/ThemedButton', () => ({
   ThemedButton: ({ title, onPress, style }: any) => {
     const { Pressable, Text } = require('react-native');
     return (
