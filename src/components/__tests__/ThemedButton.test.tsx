@@ -4,7 +4,7 @@ import { ThemedButton } from '../ThemedButton';
 import { Colors } from '@/constants/Colors';
 
 // Mock the useThemeColor hook
-jest.mock('../../hooks/useThemeColor', () => ({
+jest.mock('@/hooks/useThemeColor', () => ({
   useThemeColor: jest.fn((props, colorName) => {
     const colors = {
       highlight: '#FF5E84',
@@ -110,7 +110,7 @@ describe('ThemedButton', () => {
   });
 
   it('uses theme hook for both background and text colors', () => {
-    const { useThemeColor } = require('../../hooks/useThemeColor');
+    const { useThemeColor } = require('@/hooks/useThemeColor');
     render(<ThemedButton title="Theme Test" />);
     
     // Should be called twice - once for background, once for text

@@ -193,3 +193,95 @@ Before implementing any new feature:
 - Check coverage: `npm test -- --coverage`
 - Fix any failing tests immediately
 - Update tests when modifying existing features
+
+## Integration Testing
+
+### Multi-Component Flow Testing
+For testing complex user journeys that span multiple components:
+
+```typescript
+// Example: Login to Dashboard flow
+describe('Authentication Flow', () => {
+  it('allows user to login and navigate to dashboard', async () => {
+    const { getByText, getByPlaceholderText } = render(<App />);
+    
+    // Fill login form
+    fireEvent.changeText(getByPlaceholderText('Email'), 'user@example.com');
+    fireEvent.changeText(getByPlaceholderText('Password'), 'password123');
+    
+    // Submit login
+    fireEvent.press(getByText('Login'));
+    
+    // Verify navigation to dashboard
+    await waitFor(() => {
+      expect(getByText('Dashboard')).toBeTruthy();
+    });
+  });
+});
+```
+
+### Screen Navigation Testing
+Test navigation between screens using React Navigation:
+
+```typescript
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+const renderWithNavigation = (component: React.ReactNode) => {
+  return render(
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Test" component={() => component} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+```
+
+### State Management Integration
+For testing components with shared state (Context, Redux, etc.):
+
+```typescript
+const renderWithProviders = (
+  ui: React.ReactElement,
+  { initialState = {}, ...options } = {}
+) => {
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+    <ThemeProvider>
+      <StateProvider initialState={initialState}>
+        {children}
+      </StateProvider>
+    </ThemeProvider>
+  );
+  
+  return render(ui, { wrapper: TestWrapper, ...options });
+};
+```
+
+### Error Boundary Testing
+Test error handling across component boundaries:
+
+```typescript
+const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
+  if (shouldThrow) throw new Error('Test error');
+  return <Text>No error</Text>;
+};
+
+it('handles component errors gracefully', () => {
+  const { rerender } = render(
+    <ErrorBoundary fallback={<Text>Error occurred</Text>}>
+      <ThrowError shouldThrow={false} />
+    </ErrorBoundary>
+  );
+  
+  rerender(
+    <ErrorBoundary fallback={<Text>Error occurred</Text>}>
+      <ThrowError shouldThrow={true} />
+    </ErrorBoundary>
+  );
+  
+  expect(screen.getByText('Error occurred')).toBeTruthy();
+});
+```
