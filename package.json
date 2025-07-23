@@ -2,6 +2,7 @@
   "name": "milesahead",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -9,30 +10,62 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFilesAfterEnv": ["<rootDir>/src/test-utils/setup.ts"],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-native-safe-area-context)"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^@assets/(.*)$": "<rootDir>/assets/$1"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/__tests__/**",
+      "!src/**/index.{ts,tsx}"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      },
+      "src/hooks/**/*.{ts,tsx}": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
-    "expo": "~52.0.37",
+    "expo": "~52.0.46",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.7",
     "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
     "expo-linking": "~7.0.5",
-    "expo-router": "~4.0.17",
-    "expo-splash-screen": "~0.29.22",
+    "expo-router": "~4.0.21",
+    "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
     "expo-symbols": "~0.2.2",
-    "expo-system-ui": "~4.0.8",
+    "expo-system-ui": "~4.0.9",
     "expo-web-browser": "~14.0.2",
+    "firebase": "^11.9.1",
+    "lottie-react-native": "7.1.0",
+    "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-native": "0.76.7",
+    "react-native": "0.76.9",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
@@ -42,12 +75,24 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@eslint/js": "^9.29.0",
+    "@react-native/eslint-config": "^0.80.0",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.2.0",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-native": "^5.0.0",
     "jest": "^29.2.1",
-    "jest-expo": "~52.0.4",
+    "jest-expo": "~52.0.6",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "react-test-renderer": "18.3.1",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.3.3"
   },
   "private": true
