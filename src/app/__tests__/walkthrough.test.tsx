@@ -3,16 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Animated } from 'react-native';
 import IntroWalkthrough from '../walkthrough';
 
-// Mock the safe area insets
-jest.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
-  SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
-}));
-
-// Mock Dimensions
-jest.mock('react-native/Libraries/Utilities/Dimensions', () => ({
-  get: () => ({ width: 375, height: 812 }),
-}));
+// Note: SafeAreaInsets and Dimensions are mocked globally in setup.ts
 
 describe('IntroWalkthrough', () => {
   beforeEach(() => {

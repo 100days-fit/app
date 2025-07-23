@@ -4,14 +4,19 @@ import RootLayout from '../_layout';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
-// Mock dependencies
+// Note: expo-font and expo-splash-screen are mocked globally in setup.ts
+// Override specific behavior for this test
+const mockUseFonts = jest.fn(() => [true]);
+const mockPreventAutoHideAsync = jest.fn();
+const mockHideAsync = jest.fn();
+
 jest.mock('expo-font', () => ({
-  useFonts: jest.fn(() => [true]),
+  useFonts: mockUseFonts,
 }));
 
 jest.mock('expo-splash-screen', () => ({
-  preventAutoHideAsync: jest.fn(),
-  hideAsync: jest.fn(),
+  preventAutoHideAsync: mockPreventAutoHideAsync,
+  hideAsync: mockHideAsync,
 }));
 
 jest.mock('@/globals.css', () => ({}));
@@ -47,38 +52,38 @@ describe('RootLayout', () => {
   it('prevents splash screen auto hide on mount', () => {
     render(<RootLayout />);
     
-    expect(SplashScreen.preventAutoHideAsync).toHaveBeenCalled();
+    expect(mockPreventAutoHideAsync).toHaveBeenCalled();
   });
 
   it('returns null when fonts are not loaded', () => {
-    (useFonts as jest.Mock).mockReturnValue([false]);
+    mockUseFonts.mockReturnValue([false]);
     
     const { toJSON } = render(<RootLayout />);
     
     expect(toJSON()).toBeNull();
-    expect(SplashScreen.hideAsync).not.toHaveBeenCalled();
+    expect(mockHideAsync).not.toHaveBeenCalled();
   });
 
   it('hides splash screen when fonts are loaded', async () => {
-    (useFonts as jest.Mock).mockReturnValue([true]);
+    mockUseFonts.mockReturnValue([true]);
     
     render(<RootLayout />);
     
     await waitFor(() => {
-      expect(SplashScreen.hideAsync).toHaveBeenCalled();
+      expect(mockHideAsync).toHaveBeenCalled();
     });
   });
 
   it('loads SpaceMono font', () => {
     render(<RootLayout />);
     
-    expect(useFonts).toHaveBeenCalledWith({
+    expect(mockUseFonts).toHaveBeenCalledWith({
       SpaceMono: 'mocked-font',
     });
   });
 
   it('renders ThemedStack when fonts are loaded', () => {
-    (useFonts as jest.Mock).mockReturnValue([true]);
+    mockUseFonts.mockReturnValue([true]);
     
     const { getByTestId } = render(<RootLayout />);
     
@@ -86,7 +91,7 @@ describe('RootLayout', () => {
   });
 
   it('configures header with Logo component', () => {
-    (useFonts as jest.Mock).mockReturnValue([true]);
+    mockUseFonts.mockReturnValue([true]);
     
     const { getByTestId, getByText } = render(<RootLayout />);
     
@@ -98,7 +103,7 @@ describe('RootLayout', () => {
   });
 
   it('sets empty header title', () => {
-    (useFonts as jest.Mock).mockReturnValue([true]);
+    mockUseFonts.mockReturnValue([true]);
     
     const { getByTestId } = render(<RootLayout />);
     
@@ -107,7 +112,7 @@ describe('RootLayout', () => {
   });
 
   it('Logo component renders with correct structure', () => {
-    (useFonts as jest.Mock).mockReturnValue([true]);
+    mockUseFonts.mockReturnValue([true]);
     
     const { getByText, UNSAFE_getAllByType } = render(<RootLayout />);
     
@@ -127,7 +132,7 @@ describe('RootLayout', () => {
   });
 
   it('handles font loading state changes', async () => {
-    const mockUseFonts = useFonts as jest.Mock;
+    // Using the mockUseFonts defined at module level
     
     // Start with fonts not loaded
     mockUseFonts.mockReturnValue([false]);
@@ -136,7 +141,7 @@ describe('RootLayout', () => {
     
     // Should not render content yet
     expect(queryByTestId('themed-stack')).toBeNull();
-    expect(SplashScreen.hideAsync).not.toHaveBeenCalled();
+    expect(mockHideAsync).not.toHaveBeenCalled();
     
     // Simulate fonts loaded
     mockUseFonts.mockReturnValue([true]);
@@ -145,7 +150,7 @@ describe('RootLayout', () => {
     // Should now render content and hide splash
     await waitFor(() => {
       expect(queryByTestId('themed-stack')).toBeTruthy();
-      expect(SplashScreen.hideAsync).toHaveBeenCalled();
+      expect(mockHideAsync).toHaveBeenCalled();
     });
   });
 
@@ -157,6 +162,6 @@ describe('RootLayout', () => {
     rerender(<RootLayout />);
     
     // Should still only be called once (module level)
-    expect(SplashScreen.preventAutoHideAsync).toHaveBeenCalledTimes(1);
+    expect(mockPreventAutoHideAsync).toHaveBeenCalledTimes(1);
   });
 });

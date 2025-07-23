@@ -3,7 +3,7 @@ import { useThemeColor } from '../useThemeColor';
 import { Colors } from '@/constants/Colors';
 
 // Mock useColorScheme hook
-jest.mock('../useColorScheme', () => ({
+jest.mock('@/hooks/useColorScheme', () => ({
   __esModule: true,
   default: jest.fn(() => 'light'),
 }));
@@ -12,7 +12,7 @@ describe('useThemeColor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset to light theme by default
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     useColorScheme.mockReturnValue('light');
   });
 
@@ -25,7 +25,7 @@ describe('useThemeColor', () => {
   });
 
   it('returns dark theme color when in dark mode', () => {
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     useColorScheme.mockReturnValue('dark');
     
     const { result } = renderHook(() => 
@@ -44,7 +44,7 @@ describe('useThemeColor', () => {
   });
 
   it('uses prop color over theme color in dark mode', () => {
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     useColorScheme.mockReturnValue('dark');
     
     const { result } = renderHook(() => 
@@ -63,7 +63,7 @@ describe('useThemeColor', () => {
   });
 
   it('handles missing dark prop in dark mode', () => {
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     useColorScheme.mockReturnValue('dark');
     
     const { result } = renderHook(() => 
@@ -96,7 +96,7 @@ describe('useThemeColor', () => {
   });
 
   it('updates when color scheme changes', () => {
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     
     const { result, rerender } = renderHook(() => 
       useThemeColor({}, 'text')
@@ -113,7 +113,7 @@ describe('useThemeColor', () => {
   });
 
   it('prioritizes prop colors even when scheme changes', () => {
-    const useColorScheme = require('../useColorScheme').default;
+    const useColorScheme = require('@/hooks/useColorScheme').default;
     
     const { result, rerender } = renderHook(() => 
       useThemeColor({ light: '#FF0000', dark: '#00FF00' }, 'text')
