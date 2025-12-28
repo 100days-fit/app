@@ -87,3 +87,30 @@ export const mockUseThemeColor = jest.fn((props: any, colorName: string) => {
   const colors = createMockThemeColors();
   return colors[colorName as keyof typeof colors] || '#000000';
 });
+
+// Mock Firebase modules
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+  createUserWithEmailAndPassword: jest.fn(),
+  signInWithEmailAndPassword: jest.fn(),
+  signOut: jest.fn(),
+  sendPasswordResetEmail: jest.fn(),
+  sendEmailVerification: jest.fn(),
+  updateProfile: jest.fn(),
+  onAuthStateChanged: jest.fn(() => jest.fn()),
+}));
+
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(),
+  getApps: jest.fn(() => []),
+  getApp: jest.fn(),
+}));
+
+// Mock Firebase config module
+jest.mock('@/services/firebase/config', () => ({
+  auth: {
+    currentUser: null,
+    onAuthStateChanged: jest.fn(() => jest.fn()),
+  },
+  firebaseApp: {},
+}));
