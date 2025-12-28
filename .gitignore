@@ -41,3 +41,8 @@ app-example
 # Editors
 .vscode/
 .cursorignore
+# Test coverage
+coverage/
+
+# Cursor IDE
+.cursor/
